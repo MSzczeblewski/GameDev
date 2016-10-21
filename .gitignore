@@ -1,3 +1,7 @@
 /obj
 /Library
 .DS_Store
+Assembly-CSharp-Editor.csproj
+Assembly-CSharp-firstpass.csproj
+Assembly-CSharp.csproj
+/Temp
