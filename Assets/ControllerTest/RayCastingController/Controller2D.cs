@@ -4,12 +4,14 @@ using System.Collections;
 
 public class Controller2D : RaycastController {
 
-
 	float maxClimbAngle = 80;
 	float maxDescendAngle = 80;
 
 	public CollisionInfo collisions;
 
+	public override void Start(){
+		base.Start ();
+	}
 
 	//handle collision in Horizontal & Vertical Collisions functions and upate here, modify velocity to not move through object
 	public void Move(Vector3 velocity) {
