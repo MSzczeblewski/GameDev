@@ -1,88 +1,154 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEditor.Sprites;
 
+[RequireComponent (typeof (Player))]
+[RequireComponent (typeof (Controller2D))]
 public class AnimationManager : MonoBehaviour {
 
-	Animator animation;
-	public BoxCollider2D player;
-	public BoxCollider2D wall1;
-	public BoxCollider2D wall2;
+	//[HideInInspector]
+	public static bool isPlayerDead = false;
 	private bool flipAnimation = true;
+	SpriteRenderer flipPlayer; 
+	Controller2D playerController;
+	Animator playerAnimation;
+
+	//Sounds
 	public AudioSource deathSound;
-	public AudioSource zsound1;
-	public AudioSource zsound2;
+	public AudioSource climbSound;
+	public AudioSource runSound;
+	public AudioSource jumpSound;
 
+	public BoxCollider2D playerBox;
 
-	private bool dead = false;
+	public Vector2 dirInput;
+	public Vector3 showVelocity;
 
-	private float move;
+	//private LayerMask Ground;
 
+	public bool isGrounded;
+	public bool isJumping;
+	public bool isClimbing;
 
-	//---------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------*/
+
 	void Start () {
-		animation = GetComponent<Animator> ();
+		flipPlayer = gameObject.GetComponent<SpriteRenderer>();
+		playerAnimation = GetComponent<Animator> ();
+		playerController = GetComponent<Controller2D> ();
+		playerBox = GetComponent<BoxCollider2D> ();
 	}
 
+/*--------------------------------------------------------------------------------------------------------------*/
 
-	//---------------------------------------------------------------
 	void Update () {
-		move = GetComponent<Rigidbody2D> ().velocity.x;
+		Vector2 directionalInput = new Vector2 (Input.GetAxis ("Horizontal"), Input.GetAxis ("Vertical"));
+		dirInput = directionalInput;
+		showVelocity = Player.velocity;
 
-		if (move > 0 && !flipAnimation)
-			Flip ();
-		else {
-			if (move < 0 && flipAnimation)
+		IsPlayerDead ();
+
+		if (!isPlayerDead) {
+			if (directionalInput.x > 0 && !flipAnimation)
+				Flip ();
+			else if (directionalInput.x < 0 && flipAnimation)
 				Flip ();
 		}
 
-		if (player.IsTouching (wall1) || player.IsTouching (wall2)) {
-			animation.SetInteger ("State", 0);
-		} 
-		else {
-			if (move > 1 || move < -1) {
-				animation.SetInteger ("State", 4);
-				if (zsound1.isPlaying == false && zsound2.isPlaying == false && !dead)
-					zsound2.Play ();
-			} 
-			else if (move > 0 && move <= 1) {
-				animation.SetInteger ("State", 1);
-				if (zsound1.isPlaying == false && zsound2.isPlaying == false && !dead)
-					zsound1.Play ();
-			}
-			else if (move < 0){
-				animation.SetInteger ("State", 1);
-			if (zsound1.isPlaying == false && zsound2.isPlaying == false && !dead)
-				zsound1.Play ();
-			}
-			else 
-				animation.SetInteger ("State", 0);
+		HandleMovement (directionalInput.x);
 
-			
-	
-		}
-			
-		if (Input.GetKeyUp (KeyCode.LeftArrow))
-			animation.SetInteger ("State", 0);
-		if (Input.GetKeyUp (KeyCode.RightArrow))
-			animation.SetInteger ("State", 0);
+		isGrounded = IsPlayerGrounded ();
 
+		isClimbing = IsPlayerClimbing ();
 
-		if ((Input.GetKeyDown (KeyCode.Backspace) || Input.GetKeyDown (KeyCode.Delete)) && (!dead)) {
-			dead = true;
-			animation.SetInteger ("State", 8);
-			deathSound.Play ();
-		}
+		IsPlayerJumping ();
 
-		if (Input.GetKeyDown(KeyCode.Escape))
-			Application.Quit();
+		IsMovingPlaySound ();
 	}
 
-	//---------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------*/
+
+	private void HandleMovement(float horizontalInput){
+		playerAnimation.SetFloat ("Speed", Mathf.Abs (horizontalInput));
+
+		//speed up jumping animation old school mario style
+		if((isJumping && !isClimbing) || (Mathf.Abs (showVelocity.x) > 5)){
+			playerAnimation.speed = 4.0f;
+		}
+		else{
+			playerAnimation.speed = 1.0f;
+		}
+
+		if(isClimbing && !this.playerAnimation.GetCurrentAnimatorStateInfo (0).IsName ("Climb")){
+			playerAnimation.SetBool ("Climb", true);
+		}
+		else if (!this.playerAnimation.GetCurrentAnimatorStateInfo (0).IsName ("Climb")){
+			playerAnimation.SetBool ("Climb", false);
+		}
+	}
+
+	private void IsMovingPlaySound(){
+		if (Input.GetKeyDown (KeyCode.Space) && jumpSound.isPlaying == false && (isGrounded ))
+			jumpSound.Play();
+		if (isJumping || isClimbing || (Mathf.Abs (showVelocity.x) <= 5.1))
+			runSound.Stop ();
+		else if ((climbSound.isPlaying == false && runSound.isPlaying == false && !isPlayerDead) && (Mathf.Abs (showVelocity.x) > 5))
+			runSound.Play ();
+		if (isClimbing && isJumping)
+			climbSound.Play ();
+		
+	}
+
 	void Flip(){
+		if (flipAnimation) 
+			flipPlayer.flipX = true;
+		else 
+			flipPlayer.flipX = false;
+
 		flipAnimation = !flipAnimation;
-		Vector3 scale = transform.localScale;
-		scale.x *= -1;
-		transform.localScale = scale;
+	}
+		
+	private bool IsPlayerClimbing(){
+		if (Player.velocity.y < 0) {
+			if (playerController.collisions.left || playerController.collisions.right)
+				return true;
+		}
+		else{
+			 return false;
+		}
+		return false;
+	}
+
+	private bool IsPlayerGrounded(){
+		if (playerController.collisions.below) {
+			return true;
+		}
+		else
+			return false;
+	}
+
+	private void IsPlayerJumping(){
+		if(Input.GetKeyDown (KeyCode.Space)){
+			isJumping = true;
+		}
+		else if (Player.velocity.y == 0){
+			isJumping = false;
+		}
+		else if (isClimbing){
+			isJumping = false;
+		}
+	}
+
+	private void IsPlayerDead(){
+		if ((Input.GetKeyDown (KeyCode.Backspace) || Input.GetKeyDown (KeyCode.Delete)) && (!isPlayerDead)) {
+			Player.velocity.Set (0, 0, 0);
+			playerAnimation.SetInteger ("State", 8);
+			//playerAnimation.CrossFade ("deathState");
+			//yield WaitForSeconds(animation["Death"].length);
+			deathSound.Play ();
+			isPlayerDead = true;
+		} 
 	}
 }
+ 

@@ -20,7 +20,7 @@ ehthumbs.db
 .vs/
 /*.userprefs
 /*.csproj
-/*.pidb
+/*.pidb	
 /*.suo
 /*.sln*
 /*.user
