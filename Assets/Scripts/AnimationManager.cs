@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using UnityEditor.Sprites;
+using UnityEngine.Sprites;
 
 [RequireComponent (typeof (Player))]
 [RequireComponent (typeof (Controller2D))]
@@ -82,6 +82,7 @@ public class AnimationManager : MonoBehaviour {
 			playerAnimation.speed = 1.0f;
 		}
 
+		//Testing out animation states with booleans vs others
 		if(isClimbing && !this.playerAnimation.GetCurrentAnimatorStateInfo (0).IsName ("Climb")){
 			playerAnimation.SetBool ("Climb", true);
 		}

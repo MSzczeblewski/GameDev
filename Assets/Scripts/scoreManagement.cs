@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class scoreManagement : MonoBehaviour {
 	
-	public int currentSessionScore = 0;
+	public static int currentSessionScore;
 	public int currentHighScore;
 
 	public Text currentScoreBox,
@@ -13,6 +13,7 @@ public class scoreManagement : MonoBehaviour {
 
 
 	void Start () {
+		currentSessionScore = 0;
 		if (PlayerPrefs.GetInt ("playerHighScoreSZ1") == 0) {
 			resetHighScores ();
 		} else {
@@ -33,16 +34,19 @@ public class scoreManagement : MonoBehaviour {
 
 
 	private void addPoints(){
-		if (Input.GetKeyDown (KeyCode.LeftArrow))
-			currentSessionScore += 1;
-		if (Input.GetKeyDown (KeyCode.RightArrow))
-			currentSessionScore += 1;
-		if (Input.GetKeyDown (KeyCode.UpArrow))
-			currentSessionScore += 1;
-		if (Input.GetKeyDown (KeyCode.DownArrow))
-			currentSessionScore += 1;
-		if (Input.GetKeyDown (KeyCode.Space))
-			currentSessionScore += 5;
+		//From Previous Project
+//		if (!AnimationManager.isPlayerDead) {
+//			if (Input.GetKeyDown (KeyCode.LeftArrow))
+//				currentSessionScore += 1;
+//			if (Input.GetKeyDown (KeyCode.RightArrow))
+//				currentSessionScore += 1;
+//			if (Input.GetKeyDown (KeyCode.UpArrow))
+//				currentSessionScore += 1;
+//			if (Input.GetKeyDown (KeyCode.DownArrow))
+//				currentSessionScore += 1;
+//			if (Input.GetKeyDown (KeyCode.Space))
+//				currentSessionScore += 5;
+//		}
 	}
 
 	private void resetHighScores(){
