@@ -9,6 +9,7 @@ public class AnimationManager : MonoBehaviour {
 
 	//[HideInInspector]
 	public static bool isPlayerDead = false;
+	public bool needRestart = false;
 	private bool flipAnimation = true;
 	SpriteRenderer flipPlayer; 
 	Controller2D playerController;
@@ -38,6 +39,7 @@ public class AnimationManager : MonoBehaviour {
 		playerAnimation = GetComponent<Animator> ();
 		playerController = GetComponent<Controller2D> ();
 		playerBox = GetComponent<BoxCollider2D> ();
+		isPlayerDead = false;
 	}
 
 /*--------------------------------------------------------------------------------------------------------------*/
@@ -73,7 +75,7 @@ public class AnimationManager : MonoBehaviour {
 		playerAnimation.SetFloat ("Speed", Mathf.Abs (horizontalInput));
 
 		//speed up jumping animation old school mario style
-		if((isJumping && !isClimbing) || (Mathf.Abs (showVelocity.x) > 5)){
+		if((isJumping && !isClimbing) || (Mathf.Abs (showVelocity.x) > 5.2)){
 			playerAnimation.speed = 4.0f;
 		}
 		else{
@@ -141,13 +143,13 @@ public class AnimationManager : MonoBehaviour {
 	}
 
 	private void IsPlayerDead(){
-		if ((Input.GetKeyDown (KeyCode.Backspace) || Input.GetKeyDown (KeyCode.Delete)) && (!isPlayerDead)) {
+		if (isPlayerDead && !needRestart) {
 			Player.velocity.Set (0, 0, 0);
 			playerAnimation.SetInteger ("State", 8);
 			//playerAnimation.CrossFade ("deathState");
 			//yield WaitForSeconds(animation["Death"].length);
 			deathSound.Play ();
-			isPlayerDead = true;
+			needRestart = true;
 		} 
 	}
 }

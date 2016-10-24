@@ -28,7 +28,9 @@ public class PlayerInput : MonoBehaviour {
 			player.OnJumpInputUp ();
 		}
 
-		if (Input.GetKeyDown(KeyCode.Escape))
-			Application.Quit();	
+		if (Input.GetKeyDown (KeyCode.Escape))
+			AnimationManager.isPlayerDead = true;
+
+	
 	}
 }

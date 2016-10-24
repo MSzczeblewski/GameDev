@@ -10,6 +10,7 @@ public class Controller2D : RaycastController {
 	public CollisionInfo collisions;
 
 
+
 /*--------------------------------------------------------------------------------------------------------------*/
 
 	public override void Start() {
@@ -71,6 +72,8 @@ public class Controller2D : RaycastController {
 
 			//adjust ray distance if object is hit
 			if (hit) {
+					if (hit.collider.tag == "KillPlayer") 
+						AnimationManager.isPlayerDead = true;
 
 				if (hit.distance == 0) {
 					continue;
@@ -126,6 +129,9 @@ public class Controller2D : RaycastController {
 
 			//check for collision on items tagged to jump through
 			if (hit) {
+					if (hit.collider.tag == "KillPlayer") 
+						AnimationManager.isPlayerDead = true;			
+					
 				if (hit.collider.tag == "Through") {
 					if (directionY == 1 || hit.distance == 0) {
 						continue;

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameOverManager : MonoBehaviour {
 
 
-	public float restartDelay = 5f;
+	public float restartDelay = 15f;
 	Player player;
 	Animator gameOver;
 
@@ -23,8 +23,12 @@ public class GameOverManager : MonoBehaviour {
 			gameOver.SetTrigger ("GameOver"); 
 			restartTimer += Time.deltaTime;
 
-			if(restartTimer >= restartDelay)
+			if(restartTimer >= restartDelay){
 				SceneManager.LoadScene ("High Scores");
+
+				if(AnimationManager.isPlayerDead)
+					AnimationManager.isPlayerDead = false;
+			}
 		}
 	}
 }
