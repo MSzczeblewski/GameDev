@@ -12,9 +12,9 @@ public class Player : MonoBehaviour {
 	float accelerationTimeGrounded = .1f;
 
 	//walk & run
-	const float defaultSpeed = 5;
-	float runSpeed = 7.5f;
-	float moveSpeed = 5;
+	public const float defaultSpeed = 5;
+	public float runSpeed = 7.5f;
+	public float moveSpeed = 5;
 
 	//wall jumping
 	public Vector2 wallJumpClimb;
@@ -62,13 +62,6 @@ public class Player : MonoBehaviour {
 			} else {
 				velocity.y = 0;
 			}
-		}
-
-		//run input
-		if (Input.GetKey (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
-			moveSpeed = runSpeed;
-		} else {
-			moveSpeed = defaultSpeed;
 		}
 	}
 

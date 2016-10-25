@@ -22,6 +22,12 @@ public class PlayerInput : MonoBehaviour {
 			if (Input.GetKeyUp (KeyCode.Space)) {
 				player.OnJumpInputUp ();
 			}
+			if (Input.GetKey (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
+				player.moveSpeed = player.runSpeed;
+			} 
+			else {
+				player.moveSpeed = Player.defaultSpeed;
+			}
 		}
 		else {
 			directionalInput.x = 0;
