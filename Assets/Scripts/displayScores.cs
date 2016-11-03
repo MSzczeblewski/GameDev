@@ -32,7 +32,7 @@ public class displayScores : MonoBehaviour {
 		} 
 
 		//check to see if current sessions score qualifies for a new high score
-		if (PlayerPrefs.GetInt("currentSessionScore") > PlayerPrefs.GetInt("playerHighScoreSZ10")){
+		if (PlayerPrefs.GetInt("currentSessionScoreSaved") > PlayerPrefs.GetInt("playerHighScoreSZ10")){
 			highScoreCanvas.enabled = true;
 		}
 	}
@@ -64,10 +64,10 @@ public class displayScores : MonoBehaviour {
 		int tempPlayerScore;	
 
 		for (int i=1; i<11; i++){
-			if (PlayerPrefs.GetInt("currentSessionScore") > PlayerPrefs.GetInt("playerHighScoreSZ"+i)){
+			if (PlayerPrefs.GetInt("currentSessionScoreSaved") > PlayerPrefs.GetInt("playerHighScoreSZ"+i)){
 				tempPlayerScore = PlayerPrefs.GetInt("playerHighScoreSZ"+i);
-				PlayerPrefs.SetInt("playerHighScoreSZ"+i, PlayerPrefs.GetInt("currentSessionScore"));
-				PlayerPrefs.SetInt("currentSessionScore", tempPlayerScore);
+				PlayerPrefs.SetInt("playerHighScoreSZ"+i, PlayerPrefs.GetInt("currentSessionScoreSaved"));
+				PlayerPrefs.SetInt("currentSessionScoreSaved", tempPlayerScore);
 				tempPlayerName = PlayerPrefs.GetString("playerNameHighScoreSZ"+i);
 				PlayerPrefs.SetString("playerNameHighScoreSZ"+i, PlayerPrefs.GetString("currentHighScorePlayerName"));
 				PlayerPrefs.SetString("currentHighScorePlayerName", tempPlayerName);

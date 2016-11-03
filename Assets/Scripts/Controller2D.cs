@@ -72,8 +72,9 @@ public class Controller2D : RaycastController {
 
 			//adjust ray distance if object is hit
 			if (hit) {
-					if (hit.collider.tag == "KillPlayer") 
-						AnimationManager.isPlayerDead = true;
+
+				//CheckForObstacleCollision (hit);
+				CheckForObstacleCollision (hit);
 
 				if (hit.distance == 0) {
 					continue;
@@ -129,22 +130,27 @@ public class Controller2D : RaycastController {
 
 			//check for collision on items tagged to jump through
 			if (hit) {
-					if (hit.collider.tag == "KillPlayer") 
-						AnimationManager.isPlayerDead = true;			
+				/*
+				if (hit.collider.tag == "KillPlayer" && Health == 0) 
+					Player.isPlayerDead = true;		
+				else
+					Health--;
+				*/
+				CheckForObstacleCollision (hit);
 					
-				if (hit.collider.tag == "Through") {
-					if (directionY == 1 || hit.distance == 0) {
+					if (hit.collider.tag == "Through") {
+						if (directionY == 1 || hit.distance == 0) {
 						continue;
-					}
-					if (collisions.fallingThroughPlatform) {
+						}
+						if (collisions.fallingThroughPlatform) {
 						continue;
+						}
+						if (playerInput.y == -1) {
+							collisions.fallingThroughPlatform = true;
+							Invoke("ResetFallingThroughPlatform",.5f);
+							continue;
+						}
 					}
-					if (playerInput.y == -1) {
-						collisions.fallingThroughPlatform = true;
-						Invoke("ResetFallingThroughPlatform",.5f);
-						continue;
-					}
-				}
 
 				moveAmount.y = (hit.distance - skinWidth) * directionY;
 				rayLength = hit.distance;
@@ -248,10 +254,19 @@ public class Controller2D : RaycastController {
 		collisions.fallingThroughPlatform = false;
 	}
 
+	void CheckForObstacleCollision (RaycastHit2D hit){
+		if (hit.collider.tag == "KillPlayer" && PlayerHealthManager.playerHealth != 0) 
+			PlayerHealthManager.HurtPlayer (100);
+		if (hit.collider.tag == "Enemy" && PlayerHealthManager.playerHealth != 0) 
+			PlayerHealthManager.HurtPlayer (25);
+	}
+
 /*--------------------------------------------------------------------------------------------------------------*/
 
 	//store collisions on player
 	public struct CollisionInfo {
+		public bool hasBeenHit;
+
 		public bool above, below;
 		public bool left, right;
 

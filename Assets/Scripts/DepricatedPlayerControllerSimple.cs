@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerControllerSimple : MonoBehaviour {
 
-	Animator player;
+	//Animator player;
 
 	private int leftTotal=0;
 	private float leftDelay=0;
@@ -19,7 +19,7 @@ public class PlayerControllerSimple : MonoBehaviour {
 
 	//---------------------------------------------------------------
 	void Start () {
-		player = GetComponent<Animator> ();
+		//player = GetComponent<Animator> ();
 	}
 
 

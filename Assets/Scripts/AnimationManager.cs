@@ -8,12 +8,13 @@ using UnityEngine.Sprites;
 public class AnimationManager : MonoBehaviour {
 
 	//[HideInInspector]
-	public static bool isPlayerDead = false;
+//	public static bool isPlayerDead = false;
 	public bool needRestart = false;
 	private bool flipAnimation = true;
 	SpriteRenderer flipPlayer; 
 	Controller2D playerController;
 	Animator playerAnimation;
+
 
 	//Sounds
 	public AudioSource deathSound;
@@ -21,12 +22,8 @@ public class AnimationManager : MonoBehaviour {
 	public AudioSource runSound;
 	public AudioSource jumpSound;
 
-	public BoxCollider2D playerBox;
-
 	public Vector2 dirInput;
 	public Vector3 showVelocity;
-
-	//private LayerMask Ground;
 
 	public bool isGrounded;
 	public bool isJumping;
@@ -38,8 +35,6 @@ public class AnimationManager : MonoBehaviour {
 		flipPlayer = gameObject.GetComponent<SpriteRenderer>();
 		playerAnimation = GetComponent<Animator> ();
 		playerController = GetComponent<Controller2D> ();
-		playerBox = GetComponent<BoxCollider2D> ();
-		isPlayerDead = false;
 	}
 
 /*--------------------------------------------------------------------------------------------------------------*/
@@ -49,9 +44,9 @@ public class AnimationManager : MonoBehaviour {
 		dirInput = directionalInput;
 		showVelocity = Player.velocity;
 
-		IsPlayerDead ();
+		playerDead ();
 
-		if (!isPlayerDead) {
+		if (!PlayerHealthManager.isPlayerNeedingReset) {
 			if (directionalInput.x > 0 && !flipAnimation)
 				Flip ();
 			else if (directionalInput.x < 0 && flipAnimation)
@@ -66,7 +61,8 @@ public class AnimationManager : MonoBehaviour {
 
 		IsPlayerJumping ();
 
-		IsMovingPlaySound ();
+		if(!needRestart)
+			IsMovingPlaySound ();
 	}
 
 /*--------------------------------------------------------------------------------------------------------------*/
@@ -83,24 +79,25 @@ public class AnimationManager : MonoBehaviour {
 		}
 
 		//Testing out animation states with booleans vs others
-		if(isClimbing && !this.playerAnimation.GetCurrentAnimatorStateInfo (0).IsName ("Climb")){
+		//if(isClimbing && !this.playerAnimation.GetCurrentAnimatorStateInfo (0).IsName ("Climb")){
+		if(isClimbing){
 			playerAnimation.SetBool ("Climb", true);
 		}
-		else if (!this.playerAnimation.GetCurrentAnimatorStateInfo (0).IsName ("Climb")){
+		else if (!isClimbing){
 			playerAnimation.SetBool ("Climb", false);
 		}
 	}
 
 	private void IsMovingPlaySound(){
+		if (isClimbing && isJumping && !isGrounded)
+			climbSound.Play ();
 		if (Input.GetKeyDown (KeyCode.Space) && jumpSound.isPlaying == false && (isGrounded ))
 			jumpSound.Play();
 		if (isJumping || isClimbing || (Mathf.Abs (showVelocity.x) <= 5.1))
 			runSound.Stop ();
-		else if ((climbSound.isPlaying == false && runSound.isPlaying == false && !isPlayerDead) && (Mathf.Abs (showVelocity.x) > 5))
+		else if ((climbSound.isPlaying == false && runSound.isPlaying == false && isPlayerDead() == false) && (Mathf.Abs (showVelocity.x) > 5))
 			runSound.Play ();
-		if (isClimbing && isJumping)
-			climbSound.Play ();
-		
+
 	}
 
 	void Flip(){
@@ -124,9 +121,8 @@ public class AnimationManager : MonoBehaviour {
 	}
 
 	private bool IsPlayerGrounded(){
-		if (playerController.collisions.below) {
+		if (playerController.collisions.below) 
 			return true;
-		}
 		else
 			return false;
 	}
@@ -138,17 +134,23 @@ public class AnimationManager : MonoBehaviour {
 		else if (Player.velocity.y == 0){
 			isJumping = false;
 		}
-		else if (isClimbing){
-			isJumping = false;
-		}
+//		else if (isClimbing){
+//			isJumping = false;
+//		}
 	}
 
-	private void IsPlayerDead(){
-		if (isPlayerDead && !needRestart) {
+	private bool isPlayerDead()
+	{
+		if (PlayerHealthManager.isPlayerNeedingReset)
+			return true;
+		else
+			return false;
+	}
+
+	private void playerDead(){
+		if ((PlayerHealthManager.isPlayerDead || PlayerHealthManager.isPlayerNeedingReset)  && !needRestart) {
 			Player.velocity.Set (0, 0, 0);
 			playerAnimation.SetInteger ("State", 8);
-			//playerAnimation.CrossFade ("deathState");
-			//yield WaitForSeconds(animation["Death"].length);
 			deathSound.Play ();
 			needRestart = true;
 		} 
