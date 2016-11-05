@@ -9,18 +9,32 @@ public class EnemyHurtPlayerOnContact : MonoBehaviour {
 	SpriteRenderer sprite;
 	Controller2D playerTouched;
 	public bool showLeft, showRight, showBelow;
+	public bool lockEnemyPosition = false;
 
 	public AudioSource enemyDeathSound;
 	SpriteRenderer enemyDeathSprite;
 	BoxCollider2D enemyBoxCollider;
 	Animator enemyAnimator;
+	Transform enemyTransform;
+
+	public Vector3 previousPosition;
 
 	// Use this for initialization
 	void Start () {
 		enemyDeathSprite = GetComponent<SpriteRenderer> ();
 		enemyBoxCollider = GetComponent<BoxCollider2D> ();
 		enemyAnimator = GetComponent<Animator> ();
+		enemyTransform = GetComponent<Transform> ();
 	}
+
+	void FixedUpdate () {
+		if(lockEnemyPosition)
+		{
+			previousPosition = enemyTransform.position;
+			enemyTransform.position = new Vector3 (previousPosition.x, previousPosition.y, previousPosition.z);
+		}
+	}
+
 
 
 
@@ -96,6 +110,7 @@ public class EnemyHurtPlayerOnContact : MonoBehaviour {
 		enemyDeathSound.Play ();
 		//enemyDeathSprite.color = new Color32(194, 194, 194, 0);
 		enemyBoxCollider.enabled = false;
+		lockEnemyPosition = true;
 		enemyAnimator.SetTrigger ("boom");
 		yield return new WaitForSeconds(1f);
 		Destroy(gameObject);

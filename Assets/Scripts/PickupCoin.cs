@@ -7,6 +7,7 @@ public class PickupCoin : MonoBehaviour {
 	public int pointsAwarded;
 	public AudioSource pickupSound;
 	SpriteRenderer pickupSprite;
+	bool isPickedUp = false;
 
 	void Start () {
 		pickupSprite = GetComponent<SpriteRenderer> ();
@@ -16,10 +17,12 @@ public class PickupCoin : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
-		scoreManagement.currentSessionScore += pointsAwarded;
+		if (!isPickedUp) {
+			scoreManagement.currentSessionScore += pointsAwarded;
 
-		//StartCoroutine (PickupAnimation ());
-		StartCoroutine (DestroyPickup ());
+			//StartCoroutine (PickupAnimation ());
+			StartCoroutine (DestroyPickup ());
+		}
 	}
 
 
@@ -34,6 +37,7 @@ public class PickupCoin : MonoBehaviour {
 
 	IEnumerator DestroyPickup()
 	{
+		isPickedUp = true;
 		pickupSound.Play ();
 		pickupSprite.color = new Color32(194, 194, 194, 0);
 		yield return new WaitForSeconds(.6f);

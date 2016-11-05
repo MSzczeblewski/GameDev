@@ -6,6 +6,7 @@ public class PickupHealth : MonoBehaviour {
 	public int healthAwarded;
 	public AudioSource pickupSound;
 	SpriteRenderer pickupSprite;
+	bool isPickedUp = false;
 
 	void Start () {
 		pickupSprite = GetComponent<SpriteRenderer> ();
@@ -15,17 +16,19 @@ public class PickupHealth : MonoBehaviour {
 	{
 //		if (other.gameObject.CompareTag("Player"))
 //			Destroy(gameObject);
+		if (!isPickedUp) {
+			PlayerHealthManager.playerHealth += healthAwarded;
 
-		PlayerHealthManager.playerHealth += healthAwarded;
-
-		StartCoroutine (PickupAnimation ());
-		StartCoroutine (DestroyPickup ());
+			StartCoroutine (PickupAnimation ());
+			StartCoroutine (DestroyPickup ());
+		}
 
 	}
 
 
 	IEnumerator PickupAnimation()
 	{
+		isPickedUp = true;
 		pickupSound.Play ();
 		pickupSprite.color = new Color32(194, 194, 194, 0);
 		yield return new WaitForSeconds(0f);

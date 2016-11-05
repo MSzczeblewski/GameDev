@@ -7,6 +7,7 @@ public class PickupOneUp : MonoBehaviour {
 	public int pointsAwarded;
 	public AudioSource pickupSound;
 	SpriteRenderer pickupSprite;
+	bool isPickedUp = false;
 
 	// Use this for initialization
 	void Start () {
@@ -16,22 +17,25 @@ public class PickupOneUp : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
-		PlayerHealthManager.playerLives ++;
-		StartCoroutine (DestroyPickup ());
+		if (!isPickedUp) {
+			PlayerHealthManager.playerLives++;
+			StartCoroutine (DestroyPickup ());
+		}
 	}
 		
 
 
-	IEnumerator PickupAnimation()
-	{
-		pickupSound.Play ();
-		pickupSprite.color = new Color32(194, 194, 194, 0);
-		yield return new WaitForSeconds(0f);
-	}
+//	IEnumerator PickupAnimation()
+//	{
+//		pickupSound.Play ();
+//		pickupSprite.color = new Color32(194, 194, 194, 0);
+//		yield return new WaitForSeconds(0f);
+//	}
 
 
 	IEnumerator DestroyPickup()
 	{
+		isPickedUp = true;
 		pickupSound.Play ();
 		pickupSprite.color = new Color32(194, 194, 194, 0);
 		yield return new WaitForSeconds(.8f);

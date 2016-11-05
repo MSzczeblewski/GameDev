@@ -11,10 +11,12 @@ public class MineExplode : MonoBehaviour {
 	SpriteRenderer playerSprite;
 	SpriteRenderer mineSprite;
 	Animator mineAnimator;
+	BoxCollider2D enemyBoxCollider;
 
 	// Use this for initialization
 	void Start () {
 		mineSprite = GetComponent<SpriteRenderer> ();
+		enemyBoxCollider = GetComponent<BoxCollider2D> ();
 	}
 	
 
@@ -58,6 +60,7 @@ public class MineExplode : MonoBehaviour {
 		mineAnimator = GetComponent <Animator> ();
 		mineAnimator.SetTrigger ("boom");
 		mineExplode.Play ();
+		enemyBoxCollider.enabled = false;
 		yield return new WaitForSeconds(.6f);
 		mineSprite.color = new Color32(194, 194, 194, 0);
 	}
