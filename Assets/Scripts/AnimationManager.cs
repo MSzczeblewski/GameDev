@@ -44,6 +44,9 @@ public class AnimationManager : MonoBehaviour {
 		dirInput = directionalInput;
 		showVelocity = Player.velocity;
 
+		if(!needRestart)
+			IsMovingPlaySound ();
+
 		playerDead ();
 
 		if (!PlayerHealthManager.isPlayerNeedingReset) {
@@ -60,9 +63,6 @@ public class AnimationManager : MonoBehaviour {
 		isClimbing = IsPlayerClimbing ();
 
 		IsPlayerJumping ();
-
-		if(!needRestart)
-			IsMovingPlaySound ();
 	}
 
 /*--------------------------------------------------------------------------------------------------------------*/
@@ -71,26 +71,24 @@ public class AnimationManager : MonoBehaviour {
 		playerAnimation.SetFloat ("Speed", Mathf.Abs (horizontalInput));
 
 		//speed up jumping animation old school mario style
-		if((isJumping && !isClimbing) || (Mathf.Abs (showVelocity.x) > 5.2)){
+		if((isJumping && !isClimbing) || (Mathf.Abs (showVelocity.x) > 5.2))
 			playerAnimation.speed = 4.0f;
-		}
-		else{
+		else
 			playerAnimation.speed = 1.0f;
-		}
+		
 
-		//Testing out animation states with booleans vs others
-		//if(isClimbing && !this.playerAnimation.GetCurrentAnimatorStateInfo (0).IsName ("Climb")){
-		if(isClimbing){
+		if(isClimbing)
 			playerAnimation.SetBool ("Climb", true);
-		}
-		else if (!isClimbing){
+		else if (!isClimbing)
 			playerAnimation.SetBool ("Climb", false);
-		}
+		
 	}
 
 	private void IsMovingPlaySound(){
-		if (isClimbing && isJumping && !isGrounded)
-			climbSound.Play ();
+		if (isClimbing && isJumping && !isGrounded) {
+			if (Input.GetKeyDown (KeyCode.Space))
+				climbSound.Play ();
+		}
 		if (Input.GetKeyDown (KeyCode.Space) && jumpSound.isPlaying == false && (isGrounded ))
 			jumpSound.Play();
 		if (isJumping || isClimbing || (Mathf.Abs (showVelocity.x) <= 5.1))
@@ -114,9 +112,9 @@ public class AnimationManager : MonoBehaviour {
 			if (playerController.collisions.left || playerController.collisions.right)
 				return true;
 		}
-		else{
-			 return false;
-		}
+		else
+			return false;
+		
 		return false;
 	}
 
@@ -128,19 +126,13 @@ public class AnimationManager : MonoBehaviour {
 	}
 
 	private void IsPlayerJumping(){
-		if(Input.GetKeyDown (KeyCode.Space)){
+		if(Input.GetKeyDown (KeyCode.Space))
 			isJumping = true;
-		}
-		else if (Player.velocity.y == 0){
+		else if (Player.velocity.y == 0)
 			isJumping = false;
-		}
-//		else if (isClimbing){
-//			isJumping = false;
-//		}
 	}
 
-	private bool isPlayerDead()
-	{
+	private bool isPlayerDead(){
 		if (PlayerHealthManager.isPlayerNeedingReset)
 			return true;
 		else

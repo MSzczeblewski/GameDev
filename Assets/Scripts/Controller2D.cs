@@ -255,10 +255,10 @@ public class Controller2D : RaycastController {
 	}
 
 	void CheckForObstacleCollision (RaycastHit2D hit){
-		if (hit.collider.tag == "KillPlayer" && PlayerHealthManager.playerHealth != 0) 
-			PlayerHealthManager.HurtPlayer (100);
-		if (hit.collider.tag == "Enemy" && PlayerHealthManager.playerHealth != 0) 
-			PlayerHealthManager.HurtPlayer (25);
+//		if (hit.collider.tag == "KillPlayer" && PlayerHealthManager.playerHealth != 0) 
+//			PlayerHealthManager.HurtPlayer (100);
+//		if (hit.collider.tag == "Enemy" && PlayerHealthManager.playerHealth != 0) 
+//			PlayerHealthManager.HurtPlayer (25);
 	}
 
 /*--------------------------------------------------------------------------------------------------------------*/

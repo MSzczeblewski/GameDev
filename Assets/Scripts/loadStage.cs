@@ -15,7 +15,7 @@ public class loadStage : MonoBehaviour {
 //		PlayerHealthManager.isPlayerDead = false;
 //		PlayerHealthManager.isPlayerNeedingReset = false;
 
-		SceneManager.LoadScene ("Level01");
+		SceneManager.LoadScene ("Level03");
 	}
 
 	public void quitApplication (){

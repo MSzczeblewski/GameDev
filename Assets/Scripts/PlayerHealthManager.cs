@@ -3,11 +3,13 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 //using System.Media;
+using System.Runtime.Remoting.Lifetime;
 
 public class PlayerHealthManager : MonoBehaviour {
 
 	public bool show1, show2;
 	public int show3;
+	public float showRestart;
 
 //	private float restartTimer;
 //	private float restartDelay = 5f;
@@ -15,7 +17,7 @@ public class PlayerHealthManager : MonoBehaviour {
 	public static bool isPlayerNeedingReset = false;
 	public static bool isPlayerDead = false;
 	public static bool isInvincible = false;
-	public static int playerHealth = 100;
+	public static int playerHealth = 100;  
 	public static int playerLives = 3;
 
 	public static float damageRestartTimer;
@@ -26,6 +28,7 @@ public class PlayerHealthManager : MonoBehaviour {
 
 
 	public Text playerHealthBox;
+	public Text playerLifeBox;
 
 	// Use this for initialization
 	void Start () {
@@ -70,6 +73,7 @@ public class PlayerHealthManager : MonoBehaviour {
 //			}
 		}
 		playerHealthBox.text = "Health: " + playerHealth;
+		playerLifeBox.text = "Life: " + playerLives;
 	}
 		
 /*--------------------------------------------------------------------------------------------------------------*/
@@ -94,6 +98,7 @@ public class PlayerHealthManager : MonoBehaviour {
 		show1 = isPlayerDead;
 		show2 = isPlayerNeedingReset;
 		show3 = playerLives;
+		showRestart = damageRestartTimer;
 
 	}
 	public void resetTheGame(){
@@ -107,4 +112,6 @@ public class PlayerHealthManager : MonoBehaviour {
 		playerHealth = 100;
 		isPlayerNeedingReset = false;
 	}
+
+
 }

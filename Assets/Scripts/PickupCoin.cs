@@ -4,21 +4,39 @@ using System.Collections;
 
 public class PickupCoin : MonoBehaviour {
 
-	// Use this for initialization
+	public int pointsAwarded;
+	public AudioSource pickupSound;
+	SpriteRenderer pickupSprite;
+
 	void Start () {
-
+		pickupSprite = GetComponent<SpriteRenderer> ();
 	}
 
-	// Update is called once per frame
-	void Update () {
 
-	}
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
-		if (other.gameObject.CompareTag("Player"))
-			Destroy(gameObject);
+		scoreManagement.currentSessionScore += pointsAwarded;
 
-		scoreManagement.currentSessionScore += 5;
+		//StartCoroutine (PickupAnimation ());
+		StartCoroutine (DestroyPickup ());
+	}
+
+
+
+	IEnumerator PickupAnimation()
+	{
+		pickupSound.Play ();
+		pickupSprite.color = new Color32(194, 194, 194, 0);
+		yield return new WaitForSeconds(0f);
+	}
+
+
+	IEnumerator DestroyPickup()
+	{
+		pickupSound.Play ();
+		pickupSprite.color = new Color32(194, 194, 194, 0);
+		yield return new WaitForSeconds(.6f);
+		Destroy(gameObject);
 	}
 }
