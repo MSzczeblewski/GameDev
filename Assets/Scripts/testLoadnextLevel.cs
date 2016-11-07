@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class testLoadnextLevel : MonoBehaviour {
 
+	public string loadLevel;
+	public AudioSource winLevel;
 	// Use this for initialization
 	void Start () {
 	
@@ -17,8 +19,15 @@ public class testLoadnextLevel : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other){
 		if(other.tag == "Player")
 		{
-			SceneManager.LoadScene ("Level02");
+			StartCoroutine (Play ());
 		}
 
+	}
+
+
+	IEnumerator Play(){
+		winLevel.Play ();
+		yield return new WaitForSeconds(6f);
+		SceneManager.LoadScene (loadLevel);
 	}
 }

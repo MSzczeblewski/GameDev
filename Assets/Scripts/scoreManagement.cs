@@ -47,7 +47,7 @@ public class scoreManagement : MonoBehaviour {
 //		else{
 //			currentScoreBox.text = "Score: " + currentSessionScore;
 //			PlayerPrefs.SetInt ("currentSessionScore", currentSessionScore);
-		if (PlayerHealthManager.isPlayerDead == true && !scoreSaved) {
+		if ((PlayerHealthManager.isPlayerDead == true && !scoreSaved) || (PlayerHealthManager.resetGame == true && !scoreSaved)) {
 			PlayerPrefs.SetInt ("currentSessionScoreSaved", currentSessionScore);
 			currentSessionScore = 0;
 			scoreSaved = true;

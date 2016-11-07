@@ -17,21 +17,11 @@ public class PickupOneUp : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
-		if (!isPickedUp) {
+		if (!isPickedUp && 	other.tag == "Player") {
 			PlayerHealthManager.playerLives++;
 			StartCoroutine (DestroyPickup ());
 		}
 	}
-		
-
-
-//	IEnumerator PickupAnimation()
-//	{
-//		pickupSound.Play ();
-//		pickupSprite.color = new Color32(194, 194, 194, 0);
-//		yield return new WaitForSeconds(0f);
-//	}
-
 
 	IEnumerator DestroyPickup()
 	{

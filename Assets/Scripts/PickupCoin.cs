@@ -17,10 +17,8 @@ public class PickupCoin : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
-		if (!isPickedUp) {
+		if (!isPickedUp && 	other.tag == "Player") {
 			scoreManagement.currentSessionScore += pointsAwarded;
-
-			//StartCoroutine (PickupAnimation ());
 			StartCoroutine (DestroyPickup ());
 		}
 	}

@@ -1,21 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Rendering;
 
 public class EnemyHurtPlayerOnContact : MonoBehaviour {
 
 	public AudioSource hurtSound;
-	public int damageAmount;
-	private bool flashing = false;
-	SpriteRenderer sprite;
-	Controller2D playerTouched;
-	public bool showLeft, showRight, showBelow;
-	public bool lockEnemyPosition = false;
-
+	public AudioSource enemyHit;
 	public AudioSource enemyDeathSound;
+
+	public int damageAmount;
+
+	public bool flashing = false;
+	public bool enemyStomped = false;
+	public bool enemyDead = false;
+	public bool playerHit = false;
+
+	Collider2D playerTouching;
+	SpriteRenderer sprite;
+
 	SpriteRenderer enemyDeathSprite;
 	BoxCollider2D enemyBoxCollider;
 	Animator enemyAnimator;
-	Transform enemyTransform;
+	EnemyMovementNew enemySpeed;
+
 
 	public Vector3 previousPosition;
 
@@ -24,71 +31,31 @@ public class EnemyHurtPlayerOnContact : MonoBehaviour {
 		enemyDeathSprite = GetComponent<SpriteRenderer> ();
 		enemyBoxCollider = GetComponent<BoxCollider2D> ();
 		enemyAnimator = GetComponent<Animator> ();
-		enemyTransform = GetComponent<Transform> ();
+		enemySpeed =  GetComponent<EnemyMovementNew> ();
 	}
 
-	void FixedUpdate () {
-		if(lockEnemyPosition)
+	void Update(){
+		if(enemyStomped && !enemyDead){
+			StartCoroutine (DestroyEnemy ());
+		}
+		else if(playerHit)
 		{
-			previousPosition = enemyTransform.position;
-			enemyTransform.position = new Vector3 (previousPosition.x, previousPosition.y, previousPosition.z);
+			StartCoroutine(DamagePlayer ());
 		}
 	}
-
-
-
+		
 
 	void OnTriggerEnter2D(Collider2D other){
 		if(other.tag == "Player")
 		{
-			playerTouched = other.gameObject.GetComponent<Controller2D> ();
-
-			if(other.transform.position.y >= transform.position.y && playerTouched.collisions.below)
-			{
-				StartCoroutine (DestroyEnemy ());
-			}
-
-		 	else if (!PlayerHealthManager.isInvincible && !PlayerHealthManager.isPlayerNeedingReset) {
-				hurtSound.Play ();
-				PlayerHealthManager.HurtPlayer (damageAmount);
-				sprite = other.gameObject.GetComponent <SpriteRenderer> ();
-				if (other.gameObject.CompareTag ("Player")) {
-
-					if (flashing == false) {
-						StartCoroutine (DoBlinks ());
-					}
-				}
-
-			}
-		}
-
-	}
-
-	void OnTriggerStay2D(Collider2D other) {
-		if (!PlayerHealthManager.isInvincible && !PlayerHealthManager.isPlayerNeedingReset) {
-			hurtSound.Play ();
-			PlayerHealthManager.HurtPlayer (damageAmount);
+			playerTouching = other;
 			sprite = other.gameObject.GetComponent <SpriteRenderer> ();
-			if (other.gameObject.CompareTag ("Player")) {
-
-
-
-				StartCoroutine (ExecuteAfterTime (1f));
-				if (flashing == false) {
-					StartCoroutine (DoBlinks ());
-				}
-			}
-
+			playerHit = true;
 		}
 	}
 
-
-	IEnumerator DoBlinks()
-	{
-
+	IEnumerator BlinkPlayer(){
 		flashing = true;
-
-
 		sprite.color = new Color32(194, 194, 194, 70);
 		yield return new WaitForSeconds(0.3f);
 		sprite.color = new Color32(194, 194, 194, 255);
@@ -97,22 +64,32 @@ public class EnemyHurtPlayerOnContact : MonoBehaviour {
 		yield return new WaitForSeconds(0.3f);
 		sprite.color = new Color32(194, 194, 194, 255);
 		flashing = false;
-
 	}
-
-	IEnumerator ExecuteAfterTime(float time)
+		
+	IEnumerator DamagePlayer()
 	{
-		yield return new WaitForSeconds(time);
+		if (!PlayerHealthManager.isInvincible && !PlayerHealthManager.isPlayerNeedingReset && !enemyStomped) {
+			PlayerHealthManager.HurtPlayer (damageAmount);
+			hurtSound.Play ();
+
+			if (playerTouching.gameObject.CompareTag ("Player")) {
+				if (!flashing) 
+					StartCoroutine (BlinkPlayer ());
+			}
+		}
+		playerHit = false;
+		yield return new WaitForSeconds(0f);
 	}
 
 	IEnumerator DestroyEnemy()
 	{
+		enemyDead = true;
 		enemyDeathSound.Play ();
-		//enemyDeathSprite.color = new Color32(194, 194, 194, 0);
+		enemyHit.Play ();
 		enemyBoxCollider.enabled = false;
-		lockEnemyPosition = true;
+		enemySpeed.speed = 0f;
 		enemyAnimator.SetTrigger ("boom");
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(2f);
 		Destroy(gameObject);
 	}
 }

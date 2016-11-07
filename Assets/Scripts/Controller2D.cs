@@ -265,7 +265,7 @@ public class Controller2D : RaycastController {
 
 	//store collisions on player
 	public struct CollisionInfo {
-		public bool hasBeenHit;
+
 
 		public bool above, below;
 		public bool left, right;

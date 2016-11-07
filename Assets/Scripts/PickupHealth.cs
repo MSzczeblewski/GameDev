@@ -16,7 +16,7 @@ public class PickupHealth : MonoBehaviour {
 	{
 //		if (other.gameObject.CompareTag("Player"))
 //			Destroy(gameObject);
-		if (!isPickedUp) {
+		if (!isPickedUp && 	other.tag == "Player") {
 			PlayerHealthManager.playerHealth += healthAwarded;
 
 			StartCoroutine (PickupAnimation ());

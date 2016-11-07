@@ -5,9 +5,9 @@ using System.Collections;
 public class Player : MonoBehaviour {
 
 	//jumping
-	public float maxJumpHeight = 4;
+	public float maxJumpHeight = 5;
 	public float minJumpHeight = 1;
-	public float timeToJumpApex = .4f;
+	public float timeToJumpApex = .5f;
 	float accelerationTimeAirborne = .2f;
 	float accelerationTimeGrounded = .1f;
 

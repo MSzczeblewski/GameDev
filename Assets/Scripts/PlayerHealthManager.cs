@@ -61,16 +61,6 @@ public class PlayerHealthManager : MonoBehaviour {
 				playerLives--;
 
 			isPlayerNeedingReset = true;
-
-			//restartTimer += Time.deltaTime;
-
-//			if(restartTimer >= restartDelay){
-//				//
-//				//Store my score here in a player pref to 
-//				//
-//				SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
-//
-//			}
 		}
 		playerHealthBox.text = "Health: " + playerHealth;
 		playerLifeBox.text = "Life: " + playerLives;

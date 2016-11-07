@@ -22,7 +22,7 @@ public class PlayerInput : MonoBehaviour {
 			if (Input.GetKeyUp (KeyCode.Space)) {
 				player.OnJumpInputUp ();
 			}
-			if (Input.GetKey (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
+			if (Input.GetKey (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift) || Input.GetKey (KeyCode.LeftAlt)) {
 				player.moveSpeed = player.runSpeed;
 			} 
 			else {
